@@ -1,0 +1,69 @@
+name: Build Release
+
+on: 
+  workflow_dispatch:
+  push:
+    tags:
+      - "v[0-9]+\\.[0-9]+\\.[0-9]+"
+      - "v[0-9]+\\.[0-9]+\\.[0-9]+-[a-z]+"
+
+env:
+  packageName: "taremin.vrm10skirtsetup"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: version
+        id: version
+        run: |
+          REPOSITORY=$(echo ${{ github.event.repository.name }})
+          echo repository=$REPOSITORY >> $GITHUB_OUTPUT
+          VERSION=$(basename ${{ github.ref }})
+          echo version=$VERSION >> $GITHUB_OUTPUT
+          ARCHIVE_BASENAME=$(echo $REPOSITORY-$VERSION)
+          echo basename=$ARCHIVE_BASENAME >> $GITHUB_OUTPUT
+          ZIP_FILENAME=$(echo $ARCHIVE_BASENAME.zip)
+          echo zip=$ZIP_FILENAME >> $GITHUB_OUTPUT
+          PACKAGE_FILENAME=$(echo $ARCHIVE_BASENAME.unitypackage)
+          echo unitypackage=$PACKAGE_FILENAME >> $GITHUB_OUTPUT
+        
+      - name: Create Zip
+        uses: thedoctor0/zip-release@09336613be18a8208dfa66bd57efafd9e2685657
+        with:
+          type: "zip"
+          filename: "${{ steps.version.outputs.zip }}"
+          exclusions: '*.git*'
+
+      - name: Create UnityPackage Directory
+        run: mkdir -p "Assets/${{ github.repository_owner }}/${{ github.event.repository.name }}"
+
+      - name: Move to Unitypackage Directory
+        run: find . -mindepth 1 -maxdepth 1 -not -name Assets -exec mv -t "Assets/${{ github.repository_owner }}/${{ github.event.repository.name }}" {} + 
+
+      - name: Create .meta list
+        run: find "Assets/" -name "*.meta" >> metaList
+          
+      - name: Check .meta list
+        run: cat metaList
+          
+      - name: Create UnityPackage
+        uses: pCYSl5EDgo/create-unitypackage@master
+        with:
+          package-path: ${{ steps.version.outputs.unitypackage }}
+          include-files: metaList
+        
+      - name: Make Release
+        uses: softprops/action-gh-release@master
+        with:
+          draft: true
+          files: |
+            ${{ steps.version.outputs.zip }}
+            ${{ steps.version.outputs.unitypackage }}
