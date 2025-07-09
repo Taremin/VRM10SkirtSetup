@@ -1,0 +1,45 @@
+{
+    "name": "VRM10SkirtSetup.Editor",
+    "rootNamespace": "VRM10SkirtSetup",
+    "references": [
+        "VRM10",
+        "UniGLTF",
+        "VRC.SDK3A",
+        "VRC.SDKBase",
+        "VRC.SDKBase.Editor",
+        "VRC.SDK3A.Editor",
+        "VRC.Utility",
+        "VRC.SDK3.Dynamics.Constraint"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "VRCSDK3A.dll",
+        "VRCSDK3A-Editor.dll",
+        "VRCSDKBase.dll",
+        "VRCSDKBase-Editor.dll",
+        "VRC.Dynamics.dll",
+        "VRC.SDK3.Dynamics.PhysBone.dll",
+        "VRC.SDK3.Dynamics.PhysBone.Editor.dll",
+        "VRC.SDK3.Dynamics.Constraint.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.vrmc.univrm",
+            "expression": "",
+            "define": "UNIVRM_EXIST"
+        },
+        {
+            "name": "com.vrchat.avatars",
+            "expression": "",
+            "define": "VRC_SDK_EXIST"
+        }
+    ],
+    "noEngineReferences": false
+}
